@@ -3,6 +3,9 @@
 A tool for opening Bag(TM) using recently discovered manufacturer backdoor.
 """
 
+#For the floor function 
+from math import floor
+
 
 def read_int():
     """A helper function for reading an integer from stdin
@@ -37,7 +40,13 @@ def press_button(display):
     :return: True if the button should be pressed
     :rtype: bool
     """
-    pass
+    
+    #Returns true if number is divisible by 17, else false.
+    if display % 17 == 0: 
+        return True
+    else: 
+        return False
+
 
 
 def button_layer(bag_state):
@@ -47,9 +56,26 @@ def button_layer(bag_state):
 
     :return: None
     """
-    pass
+    
+    #Status defaults to true to enter loop.
+    status = True 
 
+    #Loops until status false (input not divisible by 17)
+    while status:
+        print("What number is displayed?")
+        input = read_int()
+        status = press_button(input)
+        
+        #Increment suspicion level if button pressed.
+        if status == True:
+            bag_state['suspicion level'] += 1
+            print("Press the button!")
+        else:
+            print("Leave the button alone now.")
+    
+    print("Button layer is complete.")
 
+            
 def which_to_press(history, displayed):
     """Returns the integer value of the button to press according to the
     button press history and currently displayed value.
@@ -63,7 +89,22 @@ def which_to_press(history, displayed):
     :return: The label of the button to press.
     :rtype: int
     """
-    pass
+    
+    if displayed == 1:
+        return 4
+    elif displayed == 2:
+        return history[0][1]
+    elif displayed == 3:
+        prev_round = len(history) - 1
+        return history[prev_round][0]
+    else:
+        completed_rounds = len(history)
+        round = floor(completed_rounds / 2)
+
+        if history[round][1] > history[round][0]:
+            return history[round][1]
+        else:
+            return history[round][0]
 
 
 def history_layer(bag_state):
@@ -73,7 +114,24 @@ def history_layer(bag_state):
 
     :return: None
     """
-    pass
+    
+    #Empty list to store history tuples
+    history = []
+    
+    for num in range(5):
+        print("What number is displayed right now?")
+        display = read_int()
+        
+        press = which_to_press(history, display)
+        
+        print("Press the button labeled", press)
+        
+        history.append((display, press))
+        
+        if press % 2 == 1:
+            bag_state['suspicion level'] += 1
+
+    print("History layer complete.")
 
 
 def dial_to(bag_state, code):
@@ -86,7 +144,17 @@ def dial_to(bag_state, code):
     :return: The letter to turn the dial to
     :rtype: str
     """
-    pass
+    serial = bag_state['serial number']
+    size = len(serial)
+    first_index = int(serial[size-4])
+    last_index = int(serial[size-2]) + 1
+    
+    sub_str = code[first_index : last_index]
+    
+    sub_str = sorted(sub_str)
+    
+    return sub_str[0]
+
 
 
 def code_layer(bag_state):
@@ -96,7 +164,16 @@ def code_layer(bag_state):
 
     :return: None
     """
-    pass
+    
+    print("What is the displayed code?")
+    code = input('>> ')
+    
+    dial = dial_to(bag_state, code)
+    
+    print("Turn the dial to", dial)
+    print("Code layer complete.")
+    
+
 
 
 def should_flip(bag_state, has_red, has_blue, has_green):
@@ -113,7 +190,25 @@ def should_flip(bag_state, has_red, has_blue, has_green):
     :return: True if the user should flip (toggle) this switch, otherwise False
     :rtype: bool
     """
-    pass
+    #Label D
+    if has_red == False and has_blue == False and has_green == False:
+        return False
+    #Label C
+    elif has_red == True and has_blue == True and has_green == False:
+        return bag_state['indicators']['check engine']
+    #Label E
+    elif has_red == True and has_blue == False and has_green == True:
+        return bag_state['indicators']['everything ok']
+    #Label J
+    elif has_red == False and has_blue == False and has_green == True:
+        return 'J' in bag_state['serial number']
+    #Label Q
+    elif has_red == True and has_blue == True and has_green == True:
+        return 'Q' in bag_state['serial number']
+    #Label Y
+    else:
+        return 'Y' in bag_state['serial number']
+        
 
 
 def switches_layer(bag_state):
@@ -123,9 +218,32 @@ def switches_layer(bag_state):
 
     :return: None
     """
-    pass
+    
+    num_switch = bag_state['switch count']
 
 
+
+    for switch in range(num_switch):
+        print("Does switch {} have a red light?".format(switch))
+        red = read_bool()
+        print("Does switch {} have a blue light?".format(switch))
+        blue = read_bool()
+        print("Does switch {} have a green light?".format(switch))
+        green = read_bool()
+        
+        selection = should_flip(bag_state, red, blue, green)
+        
+        if selection == True:
+            bag_state['suspicion level'] += 2
+            print("Flip that switch\n")
+        else:
+            print("DO NOT flip that switch")
+    
+    print("Switches layer is complete.")
+
+
+
+#complete ? 
 def get_bag_state():
     """Interact with the user to create an initial bag state.
 
