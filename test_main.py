@@ -12,7 +12,20 @@ def test_press_button():
 
     Tests press_button function.
     """
-    pytest.xfail("Test is not implemented yet.")
+    # Needs to be True when input is divisible by 17. 
+
+    # The following should be True. 
+    valid = [-34, -17, 0, 17, 34, 51, 68, 85]
+    # The following should be False (numbers incremented by 1).
+    invalid = [num + 1 for num in valid]
+
+    # Test each value that should be True.
+    for num in valid:
+        assert(press_button(num) is True)
+
+    # Test each value that should be False.
+    for num in invalid:
+        assert(press_button(num) is False)
 
 
 def test_which_to_press():
