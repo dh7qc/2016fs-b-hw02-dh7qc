@@ -82,4 +82,33 @@ def test_should_flip():
 
     Tests should_flip function.
     """
-    pytest.xfail("Test is not implemented yet.")
+
+    # Function: should_flip(bag_state, has_red, has_blue, has_green)
+    
+    # Test state and serial number: 
+    test_state = {
+        'suspicion level': 0,
+        'indicators': {},
+    }
+    test_state['serial number'] = 'JQXX7e3652'
+    test_state['indicators']['check engine'] = False
+    test_state['indicators']['everything ok'] = True 
+
+    # Label D, All off, return False.
+    assert(should_flip(test_state, False, False, False) is False)
+
+    # Label C, Red and blue on, green off, False.
+    assert(should_flip(test_state, True, True, False) is False)
+
+    # Label E, green and red on, blue off, True.
+    assert(should_flip(test_state, True, False, True) is True)
+
+    # Label J, green on, red and blue off, True (J in serial)
+    assert(should_flip(test_state, False, False, True) is True)
+
+    # Label Q, all lights on, True (Q in serial)
+    assert(should_flip(test_state, True, True, True) is True)
+
+    # Label Y, only blue light on. False (No Y in serial).
+    assert(should_flip(test_state, False, True, False) is False)
+
