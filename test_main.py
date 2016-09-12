@@ -33,16 +33,49 @@ def test_which_to_press():
 
     Tests which_to_press function.
     """
-    pytest.xfail("Test is not implemented yet.")
+    # Format: which_to_press(history, displayed)
+    # History Format: (pressed, displayed) tuple.
+    
+    # If display shows 1, always return 4. 
+    '''
+    x = [(1, 4), (25, 100)]
+    assert(which_to_press(None, 1) == 4)
 
+    # If display shows 2, return value pressed in previous round.
+    assert(which_to_press(x, 2) == 100)
+
+    # If display shows 3, return value displayed in previous round. 
+    assert(which_to_press(x, 3) == 25)
+
+    # If display shows 4...
+    '''
+    pytest.xfail("...")
 
 def test_dial_to():
     """Test that we'll know how to respond to the Code Layer
 
     Tests dial_to function.
     """
-    pytest.xfail("Test is not implemented yet.")
 
+    # dial_to(state, code)
+    # Set up a state with a test serial number. 
+    state = {
+        'suspicion level': 0,
+        'indicators': {},
+    }
+    state['serial number'] = 'JQXX7e3652'
+
+    # Test code 
+    code = 'circuit'
+    
+    # dial_to should return a 'c'
+    assert(dial_to(state, code) == 'c')
+
+    # Test another example, should return 'a'. 
+    state['serial number'] = 'XX7e3652'
+    code = 'elephant'
+    assert(dial_to(state, code) == 'a')
+    
 
 def test_should_flip():
     """Test that we'll know how to respond to the Switches Layer
