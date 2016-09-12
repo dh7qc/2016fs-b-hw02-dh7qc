@@ -263,7 +263,7 @@ def switches_layer(bag_state):
             bag_state['suspicion level'] += 2
             print("Flip that switch\n")
         else:
-            print("DO NOT flip that switch")
+            print("DO NOT flip that switch\n")
 
     print("Switches layer is complete.")
 
