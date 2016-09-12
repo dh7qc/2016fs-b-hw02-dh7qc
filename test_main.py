@@ -1,7 +1,6 @@
 # Import pytest, so that we can use xfail.
 # You should remove this if you find you no longer need pytest.
 # flake8 will remind you.
-import pytest
 
 # Import all of our testable functions from main.
 from main import press_button, which_to_press, dial_to, should_flip
@@ -34,22 +33,23 @@ def test_which_to_press():
     Tests which_to_press function.
     """
     # Format: which_to_press(history, displayed)
-    # History Format: (pressed, displayed) tuple.
+    # History Format: (pressed, displayed) tuple list.
+
+    x = [(1, 4), (25, 100)]
 
     # If display shows 1, always return 4.
-    '''
-    x = [(1, 4), (25, 100)]
     assert(which_to_press(None, 1) == 4)
 
     # If display shows 2, return value pressed in previous round.
-    assert(which_to_press(x, 2) == 100)
+    assert(which_to_press(x, 2) == 4)
 
     # If display shows 3, return value displayed in previous round.
     assert(which_to_press(x, 3) == 25)
 
-    # If display shows 4...
-    '''
-    pytest.xfail("...")
+    # If display shows 4, press the button with the label that
+    # matches the larger of the pressed and the displayed values from
+    # round floor(completed_rounds / 2) + 1 (round 2 in this case)
+    assert(which_to_press(x, 4) == 100)
 
 
 def test_dial_to():
